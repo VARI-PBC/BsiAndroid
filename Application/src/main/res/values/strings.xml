@@ -1,0 +1,29 @@
+<!--
+  Copyright 2013 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <string name="pull_tasks_pager_label">Pull</string>
+    <string name="return_tasks_pager_label">Return</string>
+    <string name="connection_error">Connection error.</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="requisition_id">Requisition ID</string>
+    <string name="task_template">Requisition task template label</string>
+    <string name="completed_by">Completed by</string>
+    <string name="date_completed">Date completed</string>
+    <string name="time_completed">Time completed</string>
+</resources>

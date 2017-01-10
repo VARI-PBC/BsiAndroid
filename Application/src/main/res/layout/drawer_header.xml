@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?attr/colorPrimaryDark">
+
+    <ImageView
+        android:id="@+id/nav_banner"
+        android:src="@drawable/ic_bsi_banner"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/username_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="username"
+        android:textColor="@android:color/white"
+        android:gravity="center_vertical"
+        android:layout_below="@id/nav_banner"
+        android:paddingLeft="@dimen/margin_medium"
+        android:textStyle="normal|bold"
+        android:clickable="true"
+        android:onClick="onClick" />
+    <TextView
+        android:id="@+id/database_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="database"
+        android:textColor="@android:color/white"
+        android:gravity="center_vertical"
+        android:layout_below="@id/username_header"
+        android:paddingLeft="@dimen/margin_medium"
+        android:paddingBottom="@dimen/margin_small"
+        android:onClick="onClick"
+        android:clickable="true" />
+</RelativeLayout>

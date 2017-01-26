@@ -1,8 +1,10 @@
 package org.vai.vari.bsiandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,18 +12,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.List;
 
 
 public class ReqTasksListFragment extends Fragment {
 
     String mTaskType;
+    private boolean mIsLargeLayout = false;
 
     static ReqTasksListFragment newInstance(String taskType) {
         ReqTasksListFragment f = new ReqTasksListFragment();
@@ -44,14 +48,12 @@ public class ReqTasksListFragment extends Fragment {
      * The {@link android.widget.ListView} that displays the content that should be refreshed.
      */
     private ListView mListView;
-    private ReportAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         mTaskType = getArguments().getString("taskType");
-        mAdapter = new ReqTaskReportAdapter();
         setHasOptionsMenu(true);
     }
 
@@ -59,7 +61,7 @@ public class ReqTasksListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_req_tasks_list, container, false);
 
         // Retrieve the SwipeRefreshLayout and ListView instances
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
@@ -81,16 +83,45 @@ public class ReqTasksListFragment extends Fragment {
             }
         });
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View item,
+                                    int position, long rowId) {
+                // Retrieve item based on position
+                ReqTaskItem task = (ReqTaskItem)adapterView.getAdapter().getItem(position);
+                // Fire selected listener event with item
+                onItemSelected(task);
+
+                //item.setSelected(true);
+            }
+        });
+
+        if (view.findViewById(R.id.flDetailContainer) != null) {
+            mIsLargeLayout = true;
+            setActivateOnItemClick(true);
+        }
+
         return view;
     }
 
+    private void onItemSelected(ReqTaskItem task) {
+        if (mIsLargeLayout) { // single activity with list and detail
+            // Replace framelayout with new detail fragment
+            ReqTaskDetailFragment fragmentItem = ReqTaskDetailFragment.newInstance(task);
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            ft.replace(R.id.flDetailContainer, fragmentItem);
+            ft.commit();
+        } else if (task != null) { // go to separate activity
+            Intent i = new Intent(getContext(), ReqTaskDetailActivity.class);
+            i.putExtra("task", task);
+            startActivity(i);
+        }
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Set the adapter between the ListView and its backing data.
-        mListView.setAdapter(mAdapter);
         fetchRequisitionTasks();
     }
 
@@ -111,33 +142,53 @@ public class ReqTasksListFragment extends Fragment {
 
 
     private void fetchRequisitionTasks() {
+        if (mIsLargeLayout) { // single activity with list and detail
+            ReqTaskDetailFragment fragmentItem = ReqTaskDetailFragment.newInstance(null);
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            ft.replace(R.id.flDetailContainer, fragmentItem);
+            ft.commit();
+        }
+
         // Start the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(true);
 
         Calendar date_cutoff = GregorianCalendar.getInstance();
         date_cutoff.add(Calendar.DAY_OF_MONTH, -7);
+        final Context context = this.getContext();
+        String dateCutoff = DateFormat.getDateInstance(DateFormat.SHORT).format(date_cutoff.getTime());
         new ReqTasksAsync(){
             @Override
-            protected void onPostExecute(Map<String, Object> result) {
+            protected void onPostExecute(List<ReqTaskItem> tasks) {
 
                 // Stop the refreshing indicator
                 mSwipeRefreshLayout.setRefreshing(false);
 
-                String error = (String)result.get("error");
-                if (error != null) {
-                    if (error.contains("Invalid session ID") ||
-                            error.contains("Your session has expired")) {
+                if (ex != null) {
+                    if (ex.getMessage().contains("Invalid session ID") ||
+                            ex.getMessage().contains("Your session has expired")) {
                         Intent intent = new Intent(getActivity().getBaseContext(), LoginActivity.class);
                         startActivityForResult(intent, MainActivity.LOGIN_REQUEST);
                     } else {
-                        Toast.makeText(getActivity().getBaseContext(), error, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity().getBaseContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    mAdapter.mDataSet = result;
-                    mAdapter.notifyDataSetChanged();
+                    // Set the adapter between the ListView and its backing data.
+                    ReqTaskReportAdapter adapter = new ReqTaskReportAdapter(context, tasks);
+                    mListView.setAdapter(adapter);
                 }
             }
-        }.execute(DateFormat.getDateInstance(DateFormat.SHORT).format(date_cutoff.getTime()), mTaskType);
+        }.execute(dateCutoff, mTaskType);
     }
 
+    /**
+     * Turns on activate-on-click mode. When this mode is on, list items will be
+     * given the 'activated' state when touched.
+     */
+    private void setActivateOnItemClick(boolean activateOnItemClick) {
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically
+        // give items the 'activated' state when touched.
+        mListView.setChoiceMode(
+                activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
+                        : ListView.CHOICE_MODE_NONE);
+    }
 }

@@ -26,9 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, BsiConnector.OnLoginListener {
 
     static final int LOGIN_REQUEST = 1;
-    boolean mIsLargeLayout;
 
-    //ReportAdapter mAdapter;
     DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -61,8 +59,8 @@ public class MainActivity extends AppCompatActivity
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         );
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
-        myToolbar.setNavigationIcon(R.drawable.ic_bsi_logo);
+        //mDrawerToggle.setDrawerIndicatorEnabled(false);
+        //myToolbar.setNavigationIcon(R.drawable.ic_bsi_logo);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,10 +69,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         mReqTasksPagerFragment = new ReqTasksPagerFragment();
-        mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
 
         BsiConnector.getInstance().mCallback = this;
-        if (BsiConnector.getInstance().SessionID == "") {
+        if (BsiConnector.getInstance().SessionID.equals("")) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -134,4 +131,5 @@ public class MainActivity extends AppCompatActivity
         TextView databaseView = (TextView)mNavigationView.getHeaderView(0).findViewById(R.id.database_header);
         databaseView.setText(database);
     }
+
 }

@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -31,9 +34,10 @@ public class LoginActivity extends AppCompatActivity {
 
         _usernameText = (AutoCompleteTextView)findViewById(R.id.input_username);
         _passwordText = (EditText)findViewById(R.id.input_password);
-        _databaseText = (EditText)findViewById(R.id.input_database);
-        _loginButton = (Button)findViewById(R.id.btn_login);
 
+        _databaseText = (EditText)findViewById(R.id.input_database);
+        _databaseText.setText(getResources().getString(R.string.default_database));
+        _loginButton = (Button)findViewById(R.id.btn_login);
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -43,7 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new String[] {"anthony_watkins"});
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                        getResources().getStringArray(R.array.usernames_list));
         _usernameText.setAdapter(adapter);
     }
 

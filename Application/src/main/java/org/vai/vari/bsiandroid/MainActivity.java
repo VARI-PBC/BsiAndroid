@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         );
-        //mDrawerToggle.setDrawerIndicatorEnabled(false);
-        //myToolbar.setNavigationIcon(R.drawable.ic_bsi_logo);
+
+
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

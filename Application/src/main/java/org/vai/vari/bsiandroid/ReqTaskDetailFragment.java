@@ -35,28 +35,11 @@ public class ReqTaskDetailFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_task_detail,
                 container, false);
 
-        new ReqTaskDetailAsync(){
-            @Override
-            protected void onPostExecute(ReqTaskItem detail) {
-
-                if (ex != null) {
-                    if (ex.getMessage().contains("Invalid session ID") ||
-                            ex.getMessage().contains("Your session has expired")) {
-                        Intent intent = new Intent(getActivity().getBaseContext(), LoginActivity.class);
-                        startActivityForResult(intent, MainActivity.LOGIN_REQUEST);
-                    } else {
-                        Toast.makeText(getActivity().getBaseContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                    return;
-                }
-
-                // Retrieve the ListView
-                ListView listView = (ListView) view.findViewById(android.R.id.list);
-                // Set the adapter between the ListView and its backing data.
-                ReqTaskDetailAdapter adapter = new ReqTaskDetailAdapter(task);
-                listView.setAdapter(adapter);
-            }
-        }.execute(task);
+        // Retrieve the ListView
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        // Set the adapter between the ListView and its backing data.
+        ReqTaskDetailAdapter adapter = new ReqTaskDetailAdapter(task);
+        listView.setAdapter(adapter);
 
         return view;
     }

@@ -1,6 +1,7 @@
 package org.vai.vari.bsiandroid;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,8 +41,8 @@ class ReqTaskReportAdapter extends ArrayAdapter<ReqTaskItem> {
 
         requisitionId.setText(task.RequisitionId + " (" + task.TaskName + ")");
 
-        TextView taskTemplate = (TextView) view.findViewById(R.id.task_template);
-        taskTemplate.setText(task.TemplateLabel);
+        TextView instructions = (TextView) view.findViewById(R.id.instructions);
+        instructions.setText(task.Instructions);
 
         TextView dateCompleted = (TextView) view.findViewById(R.id.date_completed);
         String[] dateParts = (task.TaskEndTime).split(" ");
@@ -54,6 +55,10 @@ class ReqTaskReportAdapter extends ArrayAdapter<ReqTaskItem> {
 
         TextView completedBy = (TextView) view.findViewById(R.id.completed_by);
         completedBy.setText(task.Technician);
+
+        TextView numVials = (TextView) view.findViewById(R.id.num_vials);
+        numVials.setText("vials: " + task.NumVials);
+
         return view;
     }
 }

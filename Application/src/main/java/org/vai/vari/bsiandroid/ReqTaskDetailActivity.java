@@ -30,8 +30,8 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
         TextView requisitionId = (TextView) findViewById(R.id.requisition_id);
         requisitionId.setText(task.RequisitionId + " (" + task.TaskName + ")");
 
-        TextView taskTemplate = (TextView) findViewById(R.id.task_template);
-        taskTemplate.setText(task.TemplateLabel);
+        TextView instructions = (TextView) findViewById(R.id.instructions);
+        instructions.setText(task.Instructions);
 
         TextView dateCompleted = (TextView) findViewById(R.id.date_completed);
         String[] dateParts = (task.TaskEndTime).split(" ");
@@ -44,5 +44,8 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
 
         TextView completedBy = (TextView) findViewById(R.id.completed_by);
         completedBy.setText(task.Technician);
+
+        TextView numVials = (TextView) findViewById(R.id.num_vials);
+        numVials.setText("Num vials: " + task.NumVials);
     }
 }

@@ -17,9 +17,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 
 public class ReqTasksListFragment extends Fragment {
@@ -153,15 +157,12 @@ public class ReqTasksListFragment extends Fragment {
         mSwipeRefreshLayout.setRefreshing(true);
 
         Calendar date_cutoff = GregorianCalendar.getInstance();
-        date_cutoff.add(Calendar.DAY_OF_MONTH, -7);
+        date_cutoff.add(Calendar.DAY_OF_MONTH, -14);
         final Context context = this.getContext();
         String dateCutoff = DateFormat.getDateInstance(DateFormat.SHORT).format(date_cutoff.getTime());
         new ReqTasksAsync(){
             @Override
-            protected void onPostExecute(List<ReqTaskItem> tasks) {
-
-                // Stop the refreshing indicator
-                mSwipeRefreshLayout.setRefreshing(false);
+            protected void onPostExecute(Map<String, ReqTaskItem> tasks) {
 
                 if (ex != null) {
                     if (ex.getMessage().contains("Invalid session ID") ||
@@ -173,9 +174,20 @@ public class ReqTasksListFragment extends Fragment {
                     }
                 } else {
                     // Set the adapter between the ListView and its backing data.
-                    ReqTaskReportAdapter adapter = new ReqTaskReportAdapter(context, tasks);
+                    List<ReqTaskItem> taskList = new ArrayList<>(tasks.values());
+                    Collections.sort(taskList, new Comparator<ReqTaskItem>() {
+                        @Override
+                        public int compare(ReqTaskItem task1, ReqTaskItem task2) {
+                            return task2.TaskEndTime.compareTo(task1.TaskEndTime);
+                        }
+                    });
+                    ReqTaskReportAdapter adapter = new ReqTaskReportAdapter(context, taskList);
                     mListView.setAdapter(adapter);
                 }
+
+                // Stop the refreshing indicator
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         }.execute(dateCutoff, mTaskType);
     }

@@ -22,8 +22,9 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="requisition_id">Requisition ID</string>
-    <string name="task_template">Requisition task template label</string>
+    <string name="instructions">Instructions</string>
     <string name="completed_by">Completed by</string>
     <string name="date_completed">Date completed</string>
     <string name="time_completed">Time completed</string>
+    <string name="num_vials">vials: 0</string>
 </resources>

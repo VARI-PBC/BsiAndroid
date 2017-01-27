@@ -42,7 +42,7 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
     @Override
     public ReqTaskItem.Box getItem(int position) {
-        return task.Boxes.get(position);
+        return task.Boxes.valueAt(position);
     }
 
     @Override
@@ -79,10 +79,11 @@ class ReqTaskDetailAdapter extends BaseAdapter {
         RecyclerView boxContents = (RecyclerView) boxView.findViewById(R.id.boxContents);
         RecyclerView.LayoutManager lm;
         RecyclerView.Adapter adapter;
-        int slots = box.NumRows * box.NumColumns;
+        BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
+        int slots = containerType.NumRows * containerType.NumColumns;
         if (slots <= 144) {
-            int numColumns = box.NumColumns;
-            if (box.NumRows == 1) {
+            int numColumns = containerType.NumColumns;
+            if (containerType.NumRows == 1) {
                 switch (numColumns) {
                     case 25:
                     case 81:
@@ -127,11 +128,12 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
         @Override
         public void onBindViewHolder(SlotVH holder, int position) {
-            String row = box.NumRows == 1 ? "" :
-                    box.RowFormat == 1 ? (char)('A' + position/box.NumColumns) + "-" :
-                            String.format(Locale.US, box.NumColumns == 1 ? "%1$03d" : "%1$d", position/box.NumColumns+1) + "-";
-            String col = box.NumColumns == 1 ? "" :
-                    String.format(Locale.US, box.NumRows == 1 ? "%1$03d" : "%1$d", position%box.NumColumns+1);
+            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
+            String row = containerType.NumRows == 1 ? "" :
+                    box.RowFormat == 1 ? (char)('A' + position/containerType.NumColumns) + "-" :
+                            String.format(Locale.US, containerType.NumColumns == 1 ? "%1$03d" : "%1$d", position/containerType.NumColumns+1) + "-";
+            String col = containerType.NumColumns == 1 ? "" :
+                    String.format(Locale.US, containerType.NumRows == 1 ? "%1$03d" : "%1$d", position%containerType.NumColumns+1);
             holder.row.setText(row);
             holder.col.setText(col);
             String key = row + col;
@@ -141,7 +143,8 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
         @Override
         public int getItemCount() {
-            int slots = box.NumRows * box.NumColumns;
+            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
+            int slots = containerType.NumRows * containerType.NumColumns;
             if (slots > 144) return box.Vials.size();
             return slots;
         }
@@ -198,7 +201,8 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
         @Override
         public int getItemCount() {
-            int slots = box.NumRows * box.NumColumns;
+            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
+            int slots = containerType.NumRows * containerType.NumColumns;
             if (slots > 144) return box.Vials.size();
             return slots;
         }

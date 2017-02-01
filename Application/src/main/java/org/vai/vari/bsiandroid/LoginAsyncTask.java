@@ -4,11 +4,7 @@ import android.os.AsyncTask;
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
 
-/**
- * Created by me on 12/21/16.
- */
-
-public class LoginAsyncTask extends AsyncTask<String, Integer, String> {
+class LoginAsyncTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected String doInBackground(String... params) {

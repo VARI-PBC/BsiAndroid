@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.menu_req_tasks:
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mReqTasksPagerFragment).commit();
                 break;
+            case R.id.menu_change_password:
+                Intent intent = new Intent(this, ChangePasswordActivity.class);
+                startActivity(intent);
+                break;
         }
 
 

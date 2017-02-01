@@ -3,4 +3,7 @@
     <item
         android:id="@+id/menu_req_tasks"
         android:title="Requisition tasks" />
+    <item
+        android:id="@+id/menu_change_password"
+        android:title="Change password" />
 </menu>

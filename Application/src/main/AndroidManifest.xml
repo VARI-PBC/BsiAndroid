@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" android:theme="@style/AppThemeDialog" />
+        <activity android:name=".ChangePasswordActivity" android:theme="@style/AppThemeDialog" />
         <activity android:name=".ReqTaskDetailActivity" />
     </application>
 </manifest>

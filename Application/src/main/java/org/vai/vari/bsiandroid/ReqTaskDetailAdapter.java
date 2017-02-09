@@ -3,19 +3,20 @@ package org.vai.vari.bsiandroid;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.Locale;
 
 class ReqTaskDetailAdapter extends BaseAdapter {
-    private ReqTaskItem task;
+    private Box[] mBoxes;
 
-    ReqTaskDetailAdapter(ReqTaskItem task) {
-        this.task = task;
+    public void setData(Box[] boxes) {
+        mBoxes = boxes;
+        notifyDataSetChanged();
     }
 
     // Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
@@ -37,12 +38,12 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return task.Boxes.size();
+        return mBoxes == null ? 0 : mBoxes.length;
     }
 
     @Override
-    public ReqTaskItem.Box getItem(int position) {
-        return task.Boxes.valueAt(position);
+    public Box getItem(int position) {
+        return mBoxes[position];
     }
 
     @Override
@@ -62,28 +63,25 @@ class ReqTaskDetailAdapter extends BaseAdapter {
             boxView = convertView;
         }
 
-        final ReqTaskItem.Box box = getItem(position);
-        TextView boxlabel = (TextView)boxView.findViewById(R.id.boxlabel);
-        String boxLabel = box.Freezer.isEmpty() ? "" : box.Freezer;
-        if (!box.Rack.isEmpty()) {
-            if (!boxLabel.isEmpty()) boxLabel = boxLabel + " > ";
-            boxLabel = boxLabel + box.Rack;
-        }
-        if (!box.BoxLabel.isEmpty()) {
-            if (!boxLabel.isEmpty()) boxLabel = boxLabel + " > ";
-            boxLabel = boxLabel + box.BoxLabel;
-        }
-        boxlabel.setText(boxLabel);
+        final Box box = getItem(position);
+        TextView locationView = (TextView)boxView.findViewById(R.id.boxlabel);
+        String loc = box.ContainerLabel;
+        if (box.Workbench != null && !box.Workbench.isEmpty()) loc = loc+" ("+box.Workbench+")";
+        locationView.setText(loc);
 
         @SuppressWarnings("unchecked")
         RecyclerView boxContents = (RecyclerView) boxView.findViewById(R.id.boxContents);
         RecyclerView.LayoutManager lm;
         RecyclerView.Adapter adapter;
-        BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
-        int slots = containerType.NumRows * containerType.NumColumns;
-        if (slots <= 144) {
-            int numColumns = containerType.NumColumns;
-            if (containerType.NumRows == 1) {
+        SwitchCompat listSwitch = (SwitchCompat)boxView.findViewById(R.id.listSwitch);
+        if (box.ContainerType == null || box.ContainerType.NumColumns == 1
+                || box.ContainerType.NumRows * box.ContainerType.NumColumns > 144) {
+            lm = new LinearLayoutManager(parent.getContext());
+            adapter = new ListBoxContentAdapter(box);
+            listSwitch.setVisibility(View.INVISIBLE);
+        } else {
+            int numColumns = box.ContainerType.NumColumns;
+            if (box.ContainerType.NumRows == 1) {
                 switch (numColumns) {
                     case 25:
                     case 81:
@@ -92,12 +90,10 @@ class ReqTaskDetailAdapter extends BaseAdapter {
                         break;
                 }
             }
-            lm = new GridLayoutManager(boxView.getContext(), numColumns);
-            adapter = new SlotAdapter(boxView, box);
+            lm = new GridLayoutManager(parent.getContext(), numColumns);
+            adapter = new BoxContentAdapter(box);
             boxContents.setHasFixedSize(true);
-        } else {
-            lm = new LinearLayoutManager(boxView.getContext());
-            adapter = new FlatAdapter(boxView, box);
+            listSwitch.setChecked(false);
         }
 
         boxContents.setLayoutManager(lm);
@@ -105,106 +101,4 @@ class ReqTaskDetailAdapter extends BaseAdapter {
         return boxView;
     }
 
-    private static class SlotAdapter extends RecyclerView.Adapter<SlotVH> {
-        private View boxView;
-        private ReqTaskItem.Box box;
-
-        SlotAdapter(View view, ReqTaskItem.Box box) {
-            this.boxView = view;
-            this.box = box;
-        }
-
-        @Override
-        public SlotVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            View slotView = LayoutInflater.from(boxView.getContext())
-                    .inflate(R.layout.req_task_detail_slot, parent, false);
-            return new SlotVH(slotView, new OnVHClickedListener() {
-                @Override
-                public void onVHClicked(SlotVH vh) {
-
-                }
-            });
-        }
-
-        @Override
-        public void onBindViewHolder(SlotVH holder, int position) {
-            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
-            String row = containerType.NumRows == 1 ? "" :
-                    box.RowFormat == 1 ? (char)('A' + position/containerType.NumColumns) + "-" :
-                            String.format(Locale.US, containerType.NumColumns == 1 ? "%1$03d" : "%1$d", position/containerType.NumColumns+1) + "-";
-            String col = containerType.NumColumns == 1 ? "" :
-                    String.format(Locale.US, containerType.NumRows == 1 ? "%1$03d" : "%1$d", position%containerType.NumColumns+1);
-            holder.row.setText(row);
-            holder.col.setText(col);
-            String key = row + col;
-            ReqTaskItem.Vial vial = box.Vials.get(key);
-            holder.vialLabel.setText(vial == null ? "" : vial.current_label);
-        }
-
-        @Override
-        public int getItemCount() {
-            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
-            int slots = containerType.NumRows * containerType.NumColumns;
-            if (slots > 144) return box.Vials.size();
-            return slots;
-        }
-    }
-
-    interface OnVHClickedListener {
-        void onVHClicked(SlotVH vh);
-    }
-
-    private static class SlotVH extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final OnVHClickedListener mListener;
-
-        TextView row;
-        TextView col;
-        TextView vialLabel;
-
-        SlotVH(View itemView, OnVHClickedListener listener) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-            mListener = listener;
-
-            row = (TextView)itemView.findViewById(R.id.boxRow);
-            col = (TextView)itemView.findViewById(R.id.boxColumn);
-            vialLabel = (TextView)itemView.findViewById(R.id.vialLabel);
-        }
-
-        @Override
-        public void onClick(View v) {
-            mListener.onVHClicked(this);
-        }
-    }
-
-    private static class FlatAdapter extends RecyclerView.Adapter {
-        private View boxView;
-        private ReqTaskItem.Box box;
-
-        FlatAdapter(View view, ReqTaskItem.Box box) {
-            this.boxView = view;
-            this.box = box;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = new TextView(boxView.getContext());
-            return new RecyclerView.ViewHolder(view) {};
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ReqTaskItem.Vial vial = box.Vials.valueAt(position);
-            TextView text = (TextView)holder.itemView;
-            text.setText(vial.current_label);
-        }
-
-        @Override
-        public int getItemCount() {
-            BsiConnector.ContainerType containerType = BsiConnector.getContainerType(box.ContainerType);
-            int slots = containerType.NumRows * containerType.NumColumns;
-            if (slots > 144) return box.Vials.size();
-            return slots;
-        }
-    }
 }

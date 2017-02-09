@@ -5,10 +5,10 @@
     android:fitsSystemWindows="true"
     tools:context=".ReqTaskDetailActivity">
 
-    <include layout="@layout/req_task_row_item"
+    <include layout="@layout/req_task_master_row"
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
     <FrameLayout

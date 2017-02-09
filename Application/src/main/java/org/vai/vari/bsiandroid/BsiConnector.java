@@ -13,6 +13,9 @@ import de.timroes.axmlrpc.XMLRPCException;
 
 
 class BsiConnector {
+    public static final int USER_DEFINED_FREQUENCY = 2;
+    public static final int USER_DEFINED_LISTING = 1;
+
     private static BsiConnector mInstance = null;
     static final String CONTAINER_TYPE_VALUE = "lkup_container_type.value";
     static final String DESCRIPTION = "lkup_container_type.description";
@@ -31,7 +34,7 @@ class BsiConnector {
     private BsiConnector() {
         try {
             URL url = new URL("https://websvc.bsisystems.com/bsi/xmlrpc");
-            Client = new XMLRPCClient(url, XMLRPCClient.FLAGS_NIL); // | XMLRPCClient.FLAGS_DEBUG);
+            Client = new XMLRPCClient(url, XMLRPCClient.FLAGS_NIL | XMLRPCClient.FLAGS_DEBUG);
         } catch (java.net.MalformedURLException e) {
             e.printStackTrace();
         }
@@ -68,6 +71,7 @@ class BsiConnector {
         int NumColumns;
     }
 
+    // This method cannot be called on the main (UI) thread.
     static ContainerType getContainerType(int containerTypeValue) {
         BsiConnector instance = getInstance();
         if (instance.ContainerTypes == null) {

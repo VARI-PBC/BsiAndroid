@@ -6,17 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefresh"
+    <android.support.v7.widget.RecyclerView
+        android:id="@android:id/list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" >
-
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:scrollbars="vertical"
+        android:overScrollMode="never"
+        android:layout_weight="1"/>
 
     <View android:background="#000000"
         android:layout_width="1dp"
@@ -26,5 +22,6 @@
         android:id="@+id/flDetailContainer"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2" />
+        android:layout_weight="2">
+    </FrameLayout>
 </LinearLayout>

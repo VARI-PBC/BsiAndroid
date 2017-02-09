@@ -25,22 +25,22 @@ public class ReqTasksPagerFragment extends Fragment {
         return view;
     }
 
-    private static CharSequence[] TaskTitles = new String[] { "Pull", "Return" };
-    private static String[] TaskTypes = new String[] { "U", "F" };
+    private static CharSequence[] TaskTitles = new String[] { "Pull", "Return", "Ship" };
+    private static String[] TaskTypes = new String[] { "U", "F", "S" };
 
-    public static class ReqTaskPagerAdapter extends FragmentPagerAdapter {
+    private class ReqTaskPagerAdapter extends FragmentPagerAdapter {
         ReqTaskPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return TaskTypes.length;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return ReqTasksListFragment.newInstance(TaskTypes[position]);
+            return ReqTasksMasterFragment.newInstance(TaskTypes[position]);
         }
 
         @Override

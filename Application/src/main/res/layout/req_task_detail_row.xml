@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="64sp"
+        android:layout_height="wrap_content"
+        android:text="Loc"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/currentLabel"
+        android:layout_width="120sp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Current Label"
+        app:layout_constraintLeft_toRightOf="@+id/location"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bsiId"
+        android:layout_width="120sp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="BSI ID"
+        app:layout_constraintLeft_toRightOf="@+id/currentLabel"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/workingId"
+        android:layout_width="24sp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="W"
+        app:layout_constraintLeft_toRightOf="@+id/bsiId"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/vialType"
+        android:layout_width="120sp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Vial Type"
+        app:layout_constraintLeft_toRightOf="@+id/workingId"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/vialComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Comments"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location" />
+
+</android.support.constraint.ConstraintLayout>

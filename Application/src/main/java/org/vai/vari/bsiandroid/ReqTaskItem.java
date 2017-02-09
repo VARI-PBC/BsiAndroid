@@ -1,41 +1,39 @@
 package org.vai.vari.bsiandroid;
 
-import android.support.v4.util.ArrayMap;
-import android.util.SparseArray;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 class ReqTaskItem implements Serializable {
     String RequisitionId;
-    String TaskName;
-    String Instructions;
+    String TaskId;
+    String ReqInstructions;
+    String TaskInstructions;
     String Notes;
-    int NumVials;
     String TaskEndTime;
     String Technician;
     String TaskType;
+    String VialCount;
+    Map<String, Box> Boxes;
+}
 
-    SparseArray<Box> Boxes;
-
-    static class Box implements Serializable {
-        String Freezer;
-        String Rack;
-        String BoxLabel;
-        int RowFormat;
-        int ColumnFormat;
-        int ContainerType;
-
-        ArrayMap<String, Vial> Vials;
-    }
+class Box implements Serializable {
+    String Freezer;
+    String Rack;
+    String Box;
+    String ContainerLabel;
+    String Workbench;
+    int RowFormat;
+    int ColumnFormat;
+    BsiConnector.ContainerType ContainerType;
+    Map<String, Vial> Vials;
 
     static class Vial implements Serializable {
-        String current_label;
+        String currentLabel;
+        String bsiId;
         String workingId;
+        String vialType;
         String comments;
         String row;
         String column;
     }
-
 }

@@ -13,10 +13,9 @@ class ReqTaskItem implements Serializable {
     String Technician;
     String TaskType;
     String VialCount;
-    Map<String, Box> Boxes;
 }
 
-class Box implements Serializable {
+class Box {
     String Freezer;
     String Rack;
     String Box;
@@ -27,7 +26,7 @@ class Box implements Serializable {
     BsiConnector.ContainerType ContainerType;
     Map<String, Vial> Vials;
 
-    static class Vial implements Serializable {
+    static class Vial {
         String currentLabel;
         String bsiId;
         String workingId;

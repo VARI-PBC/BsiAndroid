@@ -31,7 +31,7 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
         requisitionId.setText(task.RequisitionId + " (" + task.TaskId + ")");
 
         TextView instructions = (TextView) findViewById(R.id.instructions);
-        instructions.setText(task.TaskInstructions);
+        instructions.setText(task.ReqInstructions);
 
         TextView dateCompleted = (TextView) findViewById(R.id.date_completed);
         String[] dateParts = (task.TaskEndTime).split(" ");

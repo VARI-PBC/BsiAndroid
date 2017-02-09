@@ -37,8 +37,8 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
         final ReqTaskItem task = params[0];
 
         try {
-            getVialDetails(task);
-            return task.Boxes.values().toArray(new Box[task.Boxes.size()]);
+            Map<String, Box> boxes = getVialDetails(task);
+            return boxes.values().toArray(new Box[boxes.size()]);
         } catch (Exception e) {
             e.printStackTrace();
             ex = e;
@@ -46,7 +46,7 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
         }
     }
 
-    private void getVialDetails(final ReqTaskItem task) throws XMLRPCException {
+    private Map<String, Box> getVialDetails(final ReqTaskItem task) throws XMLRPCException {
 
         Object[] criteria = new Object[2];
         criteria[0] = new HashMap<String, Object>() {{
@@ -61,7 +61,7 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
         }};
         ArrayList<String> display = new ArrayList<>(Arrays.asList(BSI_ID,CURRENT_LABEL,WORKING_ID,VIAL_TYPE,COMMENTS,LOCATION_ID,ROW,COL,FREEZER,RACK,BOX,CONTAINER_LABEL,WORKBENCH,ROW_FORMAT,COLUMN_FORMAT,CONTAINER_TYPE));
         String[] sort = new String[] {LOCATION_ID,ROW,COL};
-        task.Boxes = new HashMap<>();
+        Map<String, Box> boxes = new HashMap<>();
         XMLRPCClient client = BsiConnector.getInstance().Client;
         String sessionID = BsiConnector.getInstance().SessionID;
         @SuppressWarnings("unchecked")
@@ -70,7 +70,7 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
         for (Object row : rows) {
             Object[] values = (Object[])row;
             String locationId = (String)values[display.indexOf(LOCATION_ID)];
-            Box box = task.Boxes.get(locationId);
+            Box box = boxes.get(locationId);
             if (box == null) {
                 box = new Box();
                 box.Freezer = (String)values[display.indexOf(FREEZER)];
@@ -91,7 +91,7 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
                     box.ContainerType = BsiConnector.getContainerType(containterType);
                 }
                 box.Vials = new HashMap<>();
-                task.Boxes.put(locationId, box);
+                boxes.put(locationId, box);
             }
             Box.Vial vial = new Box.Vial();
             vial.currentLabel = (String)values[display.indexOf(CURRENT_LABEL)];
@@ -108,5 +108,6 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
                 box.Vials.put(key, vial);
             }
         }
+        return boxes;
     }
 }

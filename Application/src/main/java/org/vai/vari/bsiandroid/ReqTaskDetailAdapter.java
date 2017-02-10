@@ -76,6 +76,8 @@ class ReqTaskDetailAdapter extends BaseAdapter implements CompoundButton.OnCheck
         String loc = box.ContainerLabel;
         if (box.Workbench != null && !box.Workbench.isEmpty()) loc = loc+" ("+box.Workbench+")";
         locationView.setText(loc);
+        TextView numVials = (TextView)boxView.findViewById(R.id.numVialsInBox);
+        numVials.setText("vials: " + box.Vials.size());
 
         @SuppressWarnings("unchecked")
         RecyclerView boxContents = (RecyclerView) boxView.findViewById(R.id.boxContents);

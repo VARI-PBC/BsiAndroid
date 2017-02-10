@@ -28,7 +28,13 @@
                 android:textColor="?android:attr/colorForeground"
                 app:layout_constraintRight_toLeftOf="@+id/listSwitch"
                 app:layout_constraintHorizontal_chainStyle="spread_inside" />
-
+            <TextView
+                android:id="@+id/numVialsInBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_medium"
+                app:layout_constraintTop_toBottomOf="@+id/boxlabel"
+                app:layout_constraintLeft_toLeftOf="parent" />
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/listSwitch"
                 android:layout_width="wrap_content"
@@ -43,10 +49,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                app:layout_constraintTop_toBottomOf="@+id/boxlabel"
+                app:layout_constraintTop_toBottomOf="@+id/numVialsInBox"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:padding="@dimen/margin_small">
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/boxContents"
                     android:layout_width="wrap_content"

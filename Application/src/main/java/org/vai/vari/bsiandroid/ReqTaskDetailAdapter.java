@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 
-class ReqTaskDetailAdapter extends BaseAdapter {
+class ReqTaskDetailAdapter extends BaseAdapter implements CompoundButton.OnCheckedChangeListener {
+    private static final int VIEW_LIST = 0;
+    private static final int VIEW_SLOT = 1;
+
     private Box[] mBoxes;
 
     public void setData(Box[] boxes) {
@@ -31,9 +35,12 @@ class ReqTaskDetailAdapter extends BaseAdapter {
     // for the specified item.
     @Override
     public int getItemViewType(int position) {
-        // Return an integer here representing the type of View.
-        // Note: Integers must be in the range 0 to getViewTypeCount() - 1
-        return 0;
+        Box box = getItem(position);
+        if (box.ContainerType == null || box.ContainerType.NumColumns == 1
+                || box.ContainerType.NumRows * box.ContainerType.NumColumns > 144) {
+            return VIEW_LIST;
+        }
+        return VIEW_SLOT;
     }
 
     @Override
@@ -54,7 +61,6 @@ class ReqTaskDetailAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final View boxView;
-        //int viewType = getItemViewType(position);
         if (convertView == null) {
             boxView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.req_task_detail_box, parent, false);
@@ -62,8 +68,10 @@ class ReqTaskDetailAdapter extends BaseAdapter {
         else {
             boxView = convertView;
         }
+        SwitchCompat listSwitch = (SwitchCompat)boxView.findViewById(R.id.listSwitch);
+        listSwitch.setOnCheckedChangeListener(this);
 
-        final Box box = getItem(position);
+        Box box = getItem(position);
         TextView locationView = (TextView)boxView.findViewById(R.id.boxlabel);
         String loc = box.ContainerLabel;
         if (box.Workbench != null && !box.Workbench.isEmpty()) loc = loc+" ("+box.Workbench+")";
@@ -71,14 +79,35 @@ class ReqTaskDetailAdapter extends BaseAdapter {
 
         @SuppressWarnings("unchecked")
         RecyclerView boxContents = (RecyclerView) boxView.findViewById(R.id.boxContents);
-        RecyclerView.LayoutManager lm;
-        RecyclerView.Adapter adapter;
-        SwitchCompat listSwitch = (SwitchCompat)boxView.findViewById(R.id.listSwitch);
-        if (box.ContainerType == null || box.ContainerType.NumColumns == 1
-                || box.ContainerType.NumRows * box.ContainerType.NumColumns > 144) {
-            lm = new LinearLayoutManager(parent.getContext());
-            adapter = new ListBoxContentAdapter(box);
+        boolean asList = getItemViewType(position) == VIEW_LIST;
+        if (asList) {
             listSwitch.setVisibility(View.INVISIBLE);
+        } else {
+            listSwitch.setChecked(false);
+        }
+        setUpBoxContents(asList, box, boxContents);
+        return boxView;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        ViewGroup parentView = (ViewGroup)buttonView.getParent();
+        switch (buttonView.getId()) {
+            case R.id.listSwitch:
+                RecyclerView boxContents = (RecyclerView) parentView.findViewById(R.id.boxContents);
+                BoxContentAdapter adapter = (BoxContentAdapter)boxContents.getAdapter();
+                Box box = adapter.mBox;
+                setUpBoxContents(buttonView.isChecked(), box, boxContents);
+                break;
+        }
+    }
+
+    private void setUpBoxContents(boolean asList, Box box, RecyclerView boxContents) {
+        RecyclerView.LayoutManager lm;
+        BoxContentAdapter adapter;
+        if (asList) {
+            lm = new LinearLayoutManager(boxContents.getContext());
+            adapter = new ListBoxContentAdapter(box);
         } else {
             int numColumns = box.ContainerType.NumColumns;
             if (box.ContainerType.NumRows == 1) {
@@ -90,15 +119,11 @@ class ReqTaskDetailAdapter extends BaseAdapter {
                         break;
                 }
             }
-            lm = new GridLayoutManager(parent.getContext(), numColumns);
+            lm = new GridLayoutManager(boxContents.getContext(), numColumns);
             adapter = new BoxContentAdapter(box);
             boxContents.setHasFixedSize(true);
-            listSwitch.setChecked(false);
         }
-
         boxContents.setLayoutManager(lm);
         boxContents.setAdapter(adapter);
-        return boxView;
     }
-
 }

@@ -24,7 +24,8 @@
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reqNotes" />
+        app:layout_constraintTop_toBottomOf="@+id/reqNotes"
+        android:layout_marginBottom="8dp" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -42,6 +43,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskInstructions"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp" />
 
 </android.support.constraint.ConstraintLayout>

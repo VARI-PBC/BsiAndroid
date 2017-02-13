@@ -47,7 +47,7 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
     void clearTasks() {
         int size = mTasks.size();
         mTasks.clear();
-        notifyItemRangeRemoved(0, size-1);
+        notifyItemRangeRemoved(0, size);
     }
 
     void setSelectedPostition(int postition) {

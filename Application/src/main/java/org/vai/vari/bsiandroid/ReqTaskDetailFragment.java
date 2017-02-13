@@ -41,8 +41,10 @@ public class ReqTaskDetailFragment extends Fragment {
         listView.setAdapter(mAdapter);
         TextView reqNotes = (TextView)view.findViewById(R.id.reqNotes);
         reqNotes.setText(mTask.Notes);
+        if (mTask.Notes.isEmpty()) reqNotes.setHeight(0);
         TextView instructions = (TextView)view.findViewById(R.id.taskInstructions);
         instructions.setText(mTask.TaskInstructions);
+        if (mTask.TaskInstructions.isEmpty()) instructions.setHeight(0);
         final ProgressBar loading = (ProgressBar)view.findViewById(R.id.progressBar2);
         loading.setVisibility(View.VISIBLE);
         new VialsQueryAsync(){

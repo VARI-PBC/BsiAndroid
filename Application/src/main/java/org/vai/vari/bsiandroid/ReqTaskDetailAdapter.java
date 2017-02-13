@@ -93,10 +93,10 @@ class ReqTaskDetailAdapter extends BaseAdapter implements CompoundButton.OnCheck
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        ViewGroup parentView = (ViewGroup)buttonView.getParent();
+        ViewGroup constraintView = (ViewGroup)buttonView.getParent().getParent();
         switch (buttonView.getId()) {
             case R.id.listSwitch:
-                RecyclerView boxContents = (RecyclerView) parentView.findViewById(R.id.boxContents);
+                RecyclerView boxContents = (RecyclerView) constraintView.findViewById(R.id.boxContents);
                 BoxContentAdapter adapter = (BoxContentAdapter)boxContents.getAdapter();
                 Box box = adapter.mBox;
                 setUpBoxContents(buttonView.isChecked(), box, boxContents);
@@ -124,6 +124,7 @@ class ReqTaskDetailAdapter extends BaseAdapter implements CompoundButton.OnCheck
             lm = new GridLayoutManager(boxContents.getContext(), numColumns);
             adapter = new BoxContentAdapter(box);
             boxContents.setHasFixedSize(true);
+            boxContents.setNestedScrollingEnabled(false);
         }
         boxContents.setLayoutManager(lm);
         boxContents.setAdapter(adapter);

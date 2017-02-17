@@ -1,5 +1,6 @@
 package org.vai.vari.bsiandroid;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +10,35 @@ import java.util.Locale;
 
 class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Box mBox;
+    private int mSlotSize;
+    private RecyclerView mRecyclerView;
+
+    // memoize slot size for performance
+    private int getSlotSize() {
+        if (mSlotSize == 0) {
+            GridLayoutManager lm = (GridLayoutManager)mRecyclerView.getLayoutManager();
+            mSlotSize = lm.getWidth()/lm.getSpanCount();
+        }
+        return mSlotSize;
+    }
 
     BoxContentAdapter(Box box) {
         this.mBox = box;
+        mSlotSize = 0;
+    }
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+        mRecyclerView = recyclerView;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View slotView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.req_task_detail_slot, parent, false);
+        slotView.getLayoutParams().width =
+            slotView.getLayoutParams().height = getSlotSize();
         return new VH(slotView);
     }
 
@@ -43,7 +64,7 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mBox.ContainerType.NumRows * mBox.ContainerType.NumColumns;
     }
 
-    protected String getVialAddress(int position) {
+    String getVialAddress(int position) {
         if (mBox.ContainerType == null) return "";
 
         int numRows = mBox.ContainerType.NumRows;

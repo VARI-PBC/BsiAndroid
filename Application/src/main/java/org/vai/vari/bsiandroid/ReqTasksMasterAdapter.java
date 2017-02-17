@@ -19,12 +19,6 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
     private static final int VIEW_PROG = 1;
 
     private List<ReqTaskItem> mTasks;
-    private int selectedPostition = -1;
-
-    void setTasks(List<ReqTaskItem> tasks) {
-        this.mTasks = tasks;
-        notifyDataSetChanged();
-    }
 
     void addTasks(List<ReqTaskItem> tasks) {
         int positionStart = mTasks.size();
@@ -48,10 +42,6 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
         int size = mTasks.size();
         mTasks.clear();
         notifyItemRangeRemoved(0, size);
-    }
-
-    void setSelectedPostition(int postition) {
-        selectedPostition = postition;
     }
 
     ReqTasksMasterAdapter() {
@@ -85,7 +75,6 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        holder.itemView.setActivated(position == selectedPostition);
 
         if (position >= mTasks.size()) return;
         ReqTaskItem task = mTasks.get(position);

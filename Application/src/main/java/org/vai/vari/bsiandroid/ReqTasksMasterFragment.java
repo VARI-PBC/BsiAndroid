@@ -3,7 +3,6 @@ package org.vai.vari.bsiandroid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ public class ReqTasksMasterFragment extends Fragment {
     String mTaskType;
     private RecyclerView mRecyclerView;
     private ReqTasksMasterAdapter mAdapter;
-    private boolean mIsLargeLayout = false;
     private Calendar mQueryStartDate;
     private Calendar mQueryEndDate;
 
@@ -69,8 +67,6 @@ public class ReqTasksMasterFragment extends Fragment {
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // Retrieve item based on position
                 ReqTaskItem task = mAdapter.getItem(position);
-                // Fire selected listener event with item
-                mAdapter.setSelectedPostition(position);
                 mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount()-1);
                 onItemSelected(task);
             }
@@ -94,10 +90,6 @@ public class ReqTasksMasterFragment extends Fragment {
                 }
             }
         });
-
-        if (view.findViewById(R.id.flDetailContainer) != null) {
-            mIsLargeLayout = true;
-        }
 
         return view;
     }
@@ -126,14 +118,6 @@ public class ReqTasksMasterFragment extends Fragment {
 
 
     private void refreshRequisitionTasks() {
-        // clear detail view
-        if (mIsLargeLayout) { // single activity with list and detail
-            ReqTaskDetailFragment fragmentItem = ReqTaskDetailFragment.newInstance(null);
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            ft.replace(R.id.flDetailContainer, fragmentItem);
-            ft.commit();
-        }
-
         // clear all tasks from list
         mAdapter.clearTasks();
         mRecyclerView.removeAllViews();
@@ -190,13 +174,7 @@ public class ReqTasksMasterFragment extends Fragment {
     }
 
     private void onItemSelected(ReqTaskItem task) {
-        if (mIsLargeLayout) { // single activity with list and detail
-            // Replace FrameLayout with new detail fragment
-            ReqTaskDetailFragment fragmentItem = ReqTaskDetailFragment.newInstance(task);
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            ft.replace(R.id.flDetailContainer, fragmentItem);
-            ft.commit();
-        } else if (task != null) { // go to separate activity
+        if (task != null) {
             Intent i = new Intent(getContext(), ReqTaskDetailActivity.class);
             i.putExtra("task", task);
             startActivity(i);

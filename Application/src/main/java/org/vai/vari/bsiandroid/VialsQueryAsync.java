@@ -5,12 +5,13 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
 
-class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
+class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, List<Box>> {
     Exception ex;
 
     static final String REQUISITION_ID = "req_vial_tasks.requisition_id";
@@ -33,16 +34,16 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
     static final String CONTAINER_TYPE = "location.container_type";
 
     @Override
-    protected Box[] doInBackground(ReqTaskItem... params) {
+    protected List<Box> doInBackground(ReqTaskItem... params) {
         final ReqTaskItem task = params[0];
 
         try {
             Map<String, Box> boxes = getVialDetails(task);
-            return boxes.values().toArray(new Box[boxes.size()]);
+            return new ArrayList<>(boxes.values());
         } catch (Exception e) {
             e.printStackTrace();
             ex = e;
-            return new Box[0];
+            return new ArrayList<>();
         }
     }
 
@@ -87,8 +88,8 @@ class VialsQueryAsync extends AsyncTask<ReqTaskItem, Integer, Box[]> {
                     box.ContainerLabel = (String)values[display.indexOf(CONTAINER_LABEL)];
                     box.RowFormat = Integer.parseInt((String) values[display.indexOf(ROW_FORMAT)]);
                     box.ColumnFormat = Integer.parseInt((String) values[display.indexOf(COLUMN_FORMAT)]);
-                    int containterType = Integer.parseInt((String) values[display.indexOf(CONTAINER_TYPE)]);
-                    box.ContainerType = BsiConnector.getContainerType(containterType);
+                    int containerType = Integer.parseInt((String) values[display.indexOf(CONTAINER_TYPE)]);
+                    box.ContainerType = BsiConnector.getContainerType(containerType);
                 }
                 box.Vials = new HashMap<>();
                 boxes.put(locationId, box);

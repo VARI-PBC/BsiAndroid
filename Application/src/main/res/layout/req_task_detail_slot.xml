@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="96dp"
     android:layout_height="96dp"
-    android:background="@drawable/customborder">
+    android:background="@drawable/custom_border">
 
     <TextView
         android:id="@+id/vialLabel"

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:padding="16dp"
-    android:background="@drawable/list_selector">
+    android:background="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/requisition_id"

@@ -1,20 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ReqTaskDetailActivity">
 
-    <include layout="@layout/req_task_master_row"
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
-
-    <FrameLayout
-        android:id="@+id/flDetailContainer"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/boxList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header">
-    </FrameLayout>
-</RelativeLayout>
+        android:layout_gravity="center_horizontal" />
+</FrameLayout>

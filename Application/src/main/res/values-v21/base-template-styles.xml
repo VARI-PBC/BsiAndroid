@@ -19,7 +19,7 @@
 
     <!-- Activity themes -->
     <style name="Theme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
 </resources>

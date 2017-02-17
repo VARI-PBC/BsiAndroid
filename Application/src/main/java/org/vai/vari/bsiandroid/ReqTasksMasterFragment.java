@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -33,6 +35,7 @@ public class ReqTasksMasterFragment extends Fragment {
     private static final int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
     private boolean loading;
+    private RecyclerView.OnScrollListener mOnScrollListener;
 
     static ReqTasksMasterFragment newInstance(String taskType) {
         ReqTasksMasterFragment f = new ReqTasksMasterFragment();
@@ -45,17 +48,20 @@ public class ReqTasksMasterFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        mTaskType = getArguments().getString("taskType");
-        setHasOptionsMenu(true);
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("taskType", mTaskType);
+        outState.putSerializable("startDate", mQueryStartDate);
+        outState.putSerializable("endDate", mQueryEndDate);
+        outState.putSerializable("tasks", new ArrayList<>(mAdapter.getTasks()));
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
+        setHasOptionsMenu(true);
+
         View view = inflater.inflate(R.layout.fragment_req_tasks_list, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(android.R.id.list);
@@ -74,7 +80,19 @@ public class ReqTasksMasterFragment extends Fragment {
 
         final LinearLayoutManager lm = new LinearLayoutManager(container.getContext());
         mRecyclerView.setLayoutManager(lm);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        if (savedInstanceState != null) {
+            mTaskType = savedInstanceState.getString("taskType");
+            mQueryStartDate = (Calendar)savedInstanceState.getSerializable("startDate");
+            mQueryEndDate = (Calendar)savedInstanceState.getSerializable("endDate");
+            @SuppressWarnings("unchecked")
+            Collection<ReqTaskItem> tasks = (Collection<ReqTaskItem>)savedInstanceState.getSerializable("tasks");
+            mAdapter.addTasks(tasks);
+        } else {
+            mTaskType = getArguments().getString("taskType");
+        }
+
+        mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView,
                                    int dx, int dy) {
@@ -89,16 +107,27 @@ public class ReqTasksMasterFragment extends Fragment {
                     loading = true;
                 }
             }
-        });
+        };
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mOnScrollListener != null) {
+            mRecyclerView.removeOnScrollListener(mOnScrollListener);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        refreshRequisitionTasks();
+        if (savedInstanceState == null) {
+            refreshRequisitionTasks();
+        }
     }
 
     @Override

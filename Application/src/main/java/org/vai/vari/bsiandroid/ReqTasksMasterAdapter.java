@@ -2,6 +2,7 @@ package org.vai.vari.bsiandroid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +21,11 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
 
     private List<ReqTaskItem> mTasks;
 
-    void addTasks(List<ReqTaskItem> tasks) {
+    List<ReqTaskItem> getTasks() {
+        return mTasks;
+    }
+
+    void addTasks(Collection<ReqTaskItem> tasks) {
         int positionStart = mTasks.size();
         int itemCount = tasks.size();
         this.mTasks.addAll(tasks);

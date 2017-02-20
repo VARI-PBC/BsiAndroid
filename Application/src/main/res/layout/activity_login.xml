@@ -14,27 +14,22 @@
         android:weightSum="1">
 
         <ImageView android:src="@drawable/ic_bsi_product_logo"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_width="wrap_content"
             android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.44"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/bsi_logo_content_desc" />
 
         <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
+        <Spinner
+            android:id="@+id/input_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <AutoCompleteTextView android:id="@+id/input_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="Username"
-                android:completionThreshold="1"
-                android:imeOptions="actionNext" />
-        </android.support.design.widget.TextInputLayout>
+            android:entries="@array/usernames_list"
+            android:prompt="@string/username"
+            android:spinnerMode="dialog" />
 
         <!-- Password Label -->
         <android.support.design.widget.TextInputLayout
@@ -46,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="@string/password"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Database Label -->
@@ -59,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Database" />
+                android:hint="@string/database" />
         </android.support.design.widget.TextInputLayout>
 
         <FrameLayout
@@ -72,7 +67,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:padding="12dp"
-                android:text="Login"/>
+                android:text="@string/login"/>
             <ProgressBar
                 android:id="@+id/progress_spinner"
                 android:layout_width="wrap_content"

@@ -27,7 +27,8 @@ class BsiConnector {
     String Username = "";
     String Database = "";
     String SessionID = "";
-    SparseArray<ContainerType> ContainerTypes = null;
+    private SparseArray<ContainerType> ContainerTypes = null;
+    Map<String, String> CachedPasswords;
 
     OnLoginListener mCallback;
 
@@ -38,6 +39,7 @@ class BsiConnector {
         } catch (java.net.MalformedURLException e) {
             e.printStackTrace();
         }
+        CachedPasswords = new HashMap<>();
     }
 
     static BsiConnector getInstance() {

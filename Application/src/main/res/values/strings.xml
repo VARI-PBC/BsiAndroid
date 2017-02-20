@@ -27,4 +27,10 @@
     <string name="date_completed">Date completed</string>
     <string name="time_completed">Time completed</string>
     <string name="num_vials">vials: 0</string>
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="database">Database</string>
+    <string name="login">Login</string>
+    <string name="bsi_logo_content_desc">BSI logo</string>
+    <string name="username_validation_error">"enter a valid username"</string>
 </resources>

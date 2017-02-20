@@ -1,26 +1,26 @@
 package org.vai.vari.bsiandroid;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private AutoCompleteTextView _usernameText;
+    private Spinner _usernameSpinner;
     private EditText _passwordText;
     private EditText _databaseText;
     private Button _loginButton;
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setFinishOnTouchOutside(false);
 
-        _usernameText = (AutoCompleteTextView)findViewById(R.id.input_username);
+        _usernameSpinner = (Spinner)findViewById(R.id.input_username);
         _passwordText = (EditText)findViewById(R.id.input_password);
 
         _databaseText = (EditText)findViewById(R.id.input_database);
@@ -49,7 +49,21 @@ public class LoginActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                         getResources().getStringArray(R.array.usernames_list));
-        _usernameText.setAdapter(adapter);
+        _usernameSpinner.setAdapter(adapter);
+        _usernameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String username = (String)adapterView.getSelectedItem();
+                String password = BsiConnector.getInstance().CachedPasswords.get(username);
+                if (password != null)
+                    _passwordText.setText(password);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                _passwordText.setText("");
+            }
+        });
     }
 
 
@@ -66,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
         progressBar.setVisibility(View.VISIBLE);
 
-        String username = _usernameText.getText().toString();
+        String username = _usernameSpinner.getSelectedItem().toString();
         String password = _passwordText.getText().toString();
         String database = _databaseText.getText().toString();
 
@@ -93,7 +107,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess(String sessionId) {
         _loginButton.setEnabled(true);
-        String username = _usernameText.getText().toString();
+        String username = _usernameSpinner.getSelectedItem().toString();
+        String password = _passwordText.getText().toString();
+        BsiConnector.getInstance().CachedPasswords.put(username, password);
         String database = _databaseText.getText().toString();
         BsiConnector.Login(username, database, sessionId);
         finish();
@@ -108,15 +124,19 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String username = _usernameText.getText().toString();
+        String username = _usernameSpinner.getSelectedItem().toString();
         String password = _passwordText.getText().toString();
         String database = _databaseText.getText().toString();
 
+        TextView errorText = (TextView)_usernameSpinner.getSelectedView();
         if (username.isEmpty() || username.contains(".")) {
-            _usernameText.setError("enter a valid username");
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);
+            errorText.setText(R.string.username_validation_error);
             valid = false;
         } else {
-            _usernameText.setError(null);
+            errorText.setTextColor(Color.WHITE);
+            errorText.setText(username);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 64) {

@@ -53,7 +53,9 @@ public class ReqTasksMasterFragment extends Fragment {
         outState.putString("taskType", mTaskType);
         outState.putSerializable("startDate", mQueryStartDate);
         outState.putSerializable("endDate", mQueryEndDate);
-        outState.putSerializable("tasks", new ArrayList<>(mAdapter.getTasks()));
+        List<ReqTaskItem> tasks = mAdapter.getTasks();
+        tasks.remove(null);
+        outState.putSerializable("tasks", new ArrayList<>(tasks));
     }
 
     @Override

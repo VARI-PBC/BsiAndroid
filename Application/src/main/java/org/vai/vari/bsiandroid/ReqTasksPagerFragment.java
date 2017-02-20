@@ -12,21 +12,22 @@ import android.view.ViewGroup;
 
 public class ReqTasksPagerFragment extends Fragment {
 
-    ViewPager pager;
-    ReqTaskPagerAdapter adapter;
+    ViewPager mViewPager;
+    ReqTaskPagerAdapter mAdapter;
+
+    private static CharSequence[] TaskTitles = new String[] { "Pull", "Return", "Ship" };
+    private static String[] TaskTypes = new String[] { "U", "F", "S" };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_req_tasks_pager, container, false);
-        pager = (ViewPager)view.findViewById(R.id.pager);
-        adapter = new ReqTaskPagerAdapter(getChildFragmentManager());
-        pager.setAdapter(adapter);
+        mViewPager = (ViewPager)view.findViewById(R.id.pager);
+        mViewPager.setOffscreenPageLimit(TaskTypes.length);
+        mAdapter = new ReqTaskPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(mAdapter);
         return view;
     }
-
-    private static CharSequence[] TaskTitles = new String[] { "Pull", "Return", "Ship" };
-    private static String[] TaskTypes = new String[] { "U", "F", "S" };
 
     private class ReqTaskPagerAdapter extends FragmentPagerAdapter {
         ReqTaskPagerAdapter(FragmentManager fm) {

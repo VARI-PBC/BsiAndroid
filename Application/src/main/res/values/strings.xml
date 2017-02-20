@@ -32,5 +32,4 @@
     <string name="database">Database</string>
     <string name="login">Login</string>
     <string name="bsi_logo_content_desc">BSI logo</string>
-    <string name="username_validation_error">"enter a valid username"</string>
 </resources>

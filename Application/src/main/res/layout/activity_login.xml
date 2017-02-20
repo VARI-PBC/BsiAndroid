@@ -23,13 +23,19 @@
             android:contentDescription="@string/bsi_logo_content_desc" />
 
         <!-- Email Label -->
-        <Spinner
-            android:id="@+id/input_username"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/usernames_list"
-            android:prompt="@string/username"
-            android:spinnerMode="dialog" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <org.vai.vari.bsiandroid.InstantAutoComplete android:id="@+id/input_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="@string/username"
+                android:completionThreshold="1"
+                android:imeOptions="actionNext" />
+        </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
         <android.support.design.widget.TextInputLayout

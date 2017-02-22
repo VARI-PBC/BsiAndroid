@@ -57,6 +57,16 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (!vial.workingId.isEmpty()) vialText = vialText+" ("+vial.workingId+")";
             vh.vialLabel.setText(vialText);
         }
+        // Stupid RecyclerView calling this for first item before layout,
+        // so make him redraw it.
+        if (position == 1) {
+            holder.itemView.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemChanged(0);
+                }
+            });
+        }
     }
 
     @Override

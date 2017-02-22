@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+
 
 public class ReqTasksMasterFragment extends Fragment {
 
@@ -95,22 +97,18 @@ public class ReqTasksMasterFragment extends Fragment {
         }
 
         mOnScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView,
-                                   int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
 
-                totalItemCount = lm.getItemCount();
-                lastVisibleItem = lm.findLastVisibleItemPosition();
-                if (!loading
-                        && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    // End has been reached
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!loading && !recyclerView.canScrollVertically(1)) {
                     loadMoreRequisitionTasks();
                     loading = true;
                 }
             }
         };
         mRecyclerView.addOnScrollListener(mOnScrollListener);
+
 
         return view;
     }
@@ -167,7 +165,7 @@ public class ReqTasksMasterFragment extends Fragment {
         fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime());
     }
 
-    private void fetchRequisitionTasks(Date startDate, Date endDate) {
+    private void fetchRequisitionTasks(final Date startDate, final Date endDate) {
         // add a null entry so the adapter will check view_type and show progress bar at bottom
         mAdapter.addTask(null);
         loading = true;
@@ -175,7 +173,9 @@ public class ReqTasksMasterFragment extends Fragment {
         new ReqTasksQueryAsync(){
             @Override
             protected void onPostExecute(List<ReqTaskItem> tasks) {
-                mAdapter.removeTask(mAdapter.getItemCount()-1);
+                int nTasks = mAdapter.getItemCount();
+                if (nTasks > 0)
+                    mAdapter.removeTask(nTasks-1);
 
                 if (ex != null) {
                     if (ex.getMessage().contains("Invalid session ID") ||
@@ -199,9 +199,23 @@ public class ReqTasksMasterFragment extends Fragment {
                 loading = false;
 
             }
-        }.execute(mTaskType,
-                DateFormat.getDateInstance(DateFormat.SHORT).format(startDate),
-                DateFormat.getDateInstance(DateFormat.SHORT).format(endDate));
+        }.execute(new HashMap<String, Object>() {{
+            put("value", mTaskType);
+            put("operator", "equals");
+            put("field", ReqTasksQueryAsync.TASK_TYPE);
+        }}, new HashMap<String, Object>() {{
+            put("value", DateFormat.getDateInstance(DateFormat.SHORT).format(startDate));
+            put("operator", "greater");
+            put("field", ReqTasksQueryAsync.END_TIME);
+        }}, new HashMap<String, Object>() {{
+            put("value", DateFormat.getDateInstance(DateFormat.SHORT).format(endDate));
+            put("operator", "less or equals");
+            put("field", ReqTasksQueryAsync.END_TIME);
+        }}, new HashMap<String, Object>() {{
+            put("value", "@@Missing");
+            put("operator", "not equals");
+            put("field", ReqTasksQueryAsync.BSI_ID);
+        }});
     }
 
     private void onItemSelected(ReqTaskItem task) {

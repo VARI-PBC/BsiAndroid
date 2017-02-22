@@ -10,7 +10,7 @@ import java.util.Map;
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
 
-class ReqTasksQueryAsync extends AsyncTask<String, Integer, List<ReqTaskItem>> {
+class ReqTasksQueryAsync extends AsyncTask<Map, Integer, List<ReqTaskItem>> {
     Exception ex;
 
     static final String REQUISITION_ID = "req_tasks.requisition_id";
@@ -25,13 +25,10 @@ class ReqTasksQueryAsync extends AsyncTask<String, Integer, List<ReqTaskItem>> {
     static final String BSI_ID = "req_vial_tasks.bsi_id";
 
     @Override
-    protected List<ReqTaskItem> doInBackground(String... params) {
-        final String taskType = params[0];
-        final String startDate = params[1];
-        final String endDate = params[2];
+    protected List<ReqTaskItem> doInBackground(Map... criteria) {
 
         try {
-           return getTasks(taskType, startDate, endDate);
+           return getTasks(criteria);
         } catch (Exception e) {
             e.printStackTrace();
             ex = e;
@@ -39,31 +36,9 @@ class ReqTasksQueryAsync extends AsyncTask<String, Integer, List<ReqTaskItem>> {
         return null;
     }
 
-    private List<ReqTaskItem> getTasks(final String taskType, final String startDate, final String endDate) throws XMLRPCException {
+    private List<ReqTaskItem> getTasks(Map[] criteria) throws XMLRPCException {
         List<ReqTaskItem> tasks = new ArrayList<>();
-
-        Object[] criteria = new Object[4];
-        criteria[0] = new HashMap<String, Object>() {{
-            put("value", taskType);
-            put("operator", "equals");
-            put("field", TASK_TYPE);
-        }};
-        criteria[1] = new HashMap<String, Object>() {{
-            put("value", startDate);
-            put("operator", "greater");
-            put("field", END_TIME);
-        }};
-        criteria[2] = new HashMap<String, Object>() {{
-            put("value", endDate);
-            put("operator", "less or equals");
-            put("field", END_TIME);
-        }};
-        criteria[3] = new HashMap<String, Object>() {{
-            put("value", "@@Missing");
-            put("operator", "not equals");
-            put("field", BSI_ID);
-        }};
-        ArrayList<String> display = new ArrayList<>(Arrays.asList(REQUISITION_ID, TASK_ID, TASK_NAME, REQ_INSTRUCTIONS, TASK_INSTRUCTIONS, END_TIME, COMPLETED_BY, NOTES));
+        ArrayList<String> display = new ArrayList<>(Arrays.asList(REQUISITION_ID, TASK_ID, TASK_NAME, TASK_TYPE, REQ_INSTRUCTIONS, TASK_INSTRUCTIONS, END_TIME, COMPLETED_BY, NOTES));
 
         XMLRPCClient client = BsiConnector.getInstance().Client;
         String sessionID = BsiConnector.getInstance().SessionID;
@@ -85,7 +60,7 @@ class ReqTasksQueryAsync extends AsyncTask<String, Integer, List<ReqTaskItem>> {
             task.Notes = (String) values[display.indexOf(NOTES)];
             task.TaskEndTime = (String) values[display.indexOf(END_TIME)];
             task.Technician = (String) values[display.indexOf(COMPLETED_BY)];
-            task.TaskType = taskType;
+            task.TaskType = (String) values[display.indexOf(TASK_TYPE)];
             task.VialCount = (String)values[values.length-1];
         }
         return tasks;

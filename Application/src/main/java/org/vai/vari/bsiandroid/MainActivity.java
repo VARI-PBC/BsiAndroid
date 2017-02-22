@@ -134,6 +134,11 @@ public class MainActivity extends AppCompatActivity
         usernameView.setText(username);
         TextView databaseView = (TextView)mNavigationView.getHeaderView(0).findViewById(R.id.database_header);
         databaseView.setText(database);
+
+        //TODO: Default to one-and-only view. Remove default view after implementing additional views.
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, mReqTasksPagerFragment)
+                .commitAllowingStateLoss();
     }
 
 }

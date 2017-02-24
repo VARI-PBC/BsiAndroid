@@ -34,8 +34,6 @@ public class ReqTasksMasterFragment extends Fragment {
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private static final int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
     private boolean loading;
     private RecyclerView.OnScrollListener mOnScrollListener;
 
@@ -56,7 +54,6 @@ public class ReqTasksMasterFragment extends Fragment {
         outState.putSerializable("startDate", mQueryStartDate);
         outState.putSerializable("endDate", mQueryEndDate);
         List<ReqTaskItem> tasks = mAdapter.getTasks();
-        tasks.remove(null);
         outState.putSerializable("tasks", new ArrayList<>(tasks));
     }
 
@@ -87,11 +84,14 @@ public class ReqTasksMasterFragment extends Fragment {
 
         if (savedInstanceState != null) {
             mTaskType = savedInstanceState.getString("taskType");
-            mQueryStartDate = (Calendar)savedInstanceState.getSerializable("startDate");
-            mQueryEndDate = (Calendar)savedInstanceState.getSerializable("endDate");
+            mQueryStartDate = (Calendar) savedInstanceState.getSerializable("startDate");
+            mQueryEndDate = (Calendar) savedInstanceState.getSerializable("endDate");
             @SuppressWarnings("unchecked")
-            Collection<ReqTaskItem> tasks = (Collection<ReqTaskItem>)savedInstanceState.getSerializable("tasks");
-            mAdapter.addTasks(tasks);
+            Collection<ReqTaskItem> tasks = (Collection<ReqTaskItem>) savedInstanceState.getSerializable("tasks");
+            if (tasks != null) {
+                tasks.remove(null);
+                mAdapter.addTasks(tasks);
+            }
         } else {
             mTaskType = getArguments().getString("taskType");
         }
@@ -108,7 +108,6 @@ public class ReqTasksMasterFragment extends Fragment {
             }
         };
         mRecyclerView.addOnScrollListener(mOnScrollListener);
-
 
         return view;
     }

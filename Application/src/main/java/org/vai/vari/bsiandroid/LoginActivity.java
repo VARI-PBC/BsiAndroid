@@ -105,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         BsiConnector.getInstance().CachedPasswords.put(username, password);
         String database = _databaseText.getText().toString();
         BsiConnector.Login(username, database, sessionId);
+        setResult(AppCompatActivity.RESULT_OK, null);
         finish();
     }
 

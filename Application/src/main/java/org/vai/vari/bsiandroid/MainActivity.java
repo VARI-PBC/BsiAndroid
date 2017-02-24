@@ -73,10 +73,22 @@ public class MainActivity extends AppCompatActivity
         BsiConnector.getInstance().mCallback = this;
         if (BsiConnector.getInstance().SessionID.equals("")) {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, LOGIN_REQUEST);
         }
         else {
             BsiConnector.getInstance().UpdateUI();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == LOGIN_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                //TODO: Default to one-and-only view. Remove default view after implementing additional views.
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, mReqTasksPagerFragment)
+                        .commitAllowingStateLoss();
+            }
         }
     }
 
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             mDrawerLayout.closeDrawer(mNavigationView);
-            getSupportFragmentManager().beginTransaction().remove(mReqTasksPagerFragment).commit();
+            //getSupportFragmentManager().beginTransaction().remove(mReqTasksPagerFragment).commit();
         }
     }
 
@@ -134,11 +146,6 @@ public class MainActivity extends AppCompatActivity
         usernameView.setText(username);
         TextView databaseView = (TextView)mNavigationView.getHeaderView(0).findViewById(R.id.database_header);
         databaseView.setText(database);
-
-        //TODO: Default to one-and-only view. Remove default view after implementing additional views.
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, mReqTasksPagerFragment)
-                .commitAllowingStateLoss();
     }
 
 }

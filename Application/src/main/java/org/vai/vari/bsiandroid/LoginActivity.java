@@ -1,5 +1,8 @@
 package org.vai.vari.bsiandroid;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,9 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Set;
+
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+    private static final String SAVED_USER_NAMES = "SavedUserNames";
+    private static final String SAVED_DATABASE = "SavedDatabase";
 
     private InstantAutoComplete _usernameText;
     private EditText _passwordText;
@@ -32,9 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _usernameText = (InstantAutoComplete) findViewById(R.id.input_username);
         _passwordText = (EditText)findViewById(R.id.input_password);
-
         _databaseText = (EditText)findViewById(R.id.input_database);
-        _databaseText.setText(getResources().getString(R.string.default_database));
         _loginButton = (Button)findViewById(R.id.btn_login);
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -44,19 +49,23 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+        String[] savedUserNames = pref.getStringSet(SAVED_USER_NAMES, new ArraySet<String>()).toArray(new String[0]);
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                        getResources().getStringArray(R.array.usernames_list));
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, savedUserNames);
         _usernameText.setAdapter(adapter);
         _usernameText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String username = ((TextView)view).getText().toString();
-                String password = BsiConnector.getInstance().CachedPasswords.get(username);
+                String password = pref.getString(username, null);
                 if (password != null)
                     _passwordText.setText(password);
             }
         });
+
+        String database = pref.getString(SAVED_DATABASE, "");
+        _databaseText.setText(database);
     }
 
 
@@ -105,6 +114,22 @@ public class LoginActivity extends AppCompatActivity {
         BsiConnector.getInstance().CachedPasswords.put(username, password);
         String database = _databaseText.getText().toString();
         BsiConnector.Login(username, database, sessionId);
+
+        SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+        Set<String> savedUserNames = pref.getStringSet(SAVED_USER_NAMES, new ArraySet<String>());
+        SharedPreferences.Editor editor = pref.edit();
+        if (!savedUserNames.contains(username)) {
+            savedUserNames.add(username);
+            editor.putStringSet(SAVED_USER_NAMES, savedUserNames);
+            editor.putString(username, password);
+        }
+
+        String savedDatabase = pref.getString(SAVED_DATABASE, null);
+        if (savedDatabase == null || !savedDatabase.equals(database)) {
+            editor.putString(SAVED_DATABASE, database);
+        }
+        editor.apply();
+
         setResult(AppCompatActivity.RESULT_OK, null);
         finish();
     }

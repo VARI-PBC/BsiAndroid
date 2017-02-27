@@ -18,12 +18,4 @@
 <resources>
     <string name="app_name">BSI</string>
     <string name="app_title">Biological Specimen Inventory System</string>
-    <string name="default_database">VARI</string>
-    <string-array name="usernames_list">
-        <item>alex_blanski</item>
-        <item>anthony_watkins</item>
-        <item>brianne_doctor</item>
-        <item>meghan_hodges</item>
-        <item>rob_montroy</item>
-    </string-array>
 </resources>

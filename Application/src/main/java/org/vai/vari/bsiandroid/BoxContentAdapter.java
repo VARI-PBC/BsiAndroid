@@ -45,7 +45,7 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         VH vh = (VH)holder;
-        vh.slotLabel.setText(getVialAddress(position));
+        vh.slotLabel.setText(getSlotAddress(position));
         int numColumns = mBox.ContainerType.NumColumns;
         String rowKey = mBox.RowFormat == 1 ? Character.toString((char)('A' + position / numColumns)) :
                 String.format(Locale.US, "%1$03d", position / numColumns+1);
@@ -74,7 +74,7 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mBox.ContainerType.NumRows * mBox.ContainerType.NumColumns;
     }
 
-    String getVialAddress(int position) {
+    private String getSlotAddress(int position) {
         if (mBox.ContainerType == null) return "";
 
         int numRows = mBox.ContainerType.NumRows;
@@ -89,6 +89,7 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (numColumns > 1) address = address + colLabel;
         return address;
     }
+
     private class VH extends RecyclerView.ViewHolder {
 
         TextView slotLabel;

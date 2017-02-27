@@ -7,18 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 class ListBoxContentAdapter extends BoxContentAdapter {
     private static final int VIEW_HEAD = 0;
     private static final int VIEW_ITEM = 1;
 
-    private Box.Vial[] mVials;
+    private List<String> mLocationKeys;
 
     ListBoxContentAdapter(Box box) {
         super(box);
-        mVials = box.Vials.values().toArray(new Box.Vial[box.Vials.size()]);
+        mLocationKeys = new ArrayList<>(box.Vials.keySet());
+        Collections.sort(mLocationKeys);
     }
 
     @Override
@@ -46,8 +49,8 @@ class ListBoxContentAdapter extends BoxContentAdapter {
             vh.vialComments.setTypeface(null, Typeface.BOLD);
             return;
         }
-        vh.position.setText(getVialAddress(position));
-        Box.Vial vial = mVials[position-1];
+        Box.Vial vial = mBox.Vials.get(mLocationKeys.get(position-1)); // subtract 1 for list header
+        vh.position.setText(getSlotAddress(vial.row, vial.column));
         vh.currentLabel.setText(vial.currentLabel);
         vh.bsiId.setText(vial.bsiId);
         vh.workingId.setText(vial.workingId);
@@ -57,7 +60,19 @@ class ListBoxContentAdapter extends BoxContentAdapter {
 
     @Override
     public int getItemCount() {
-        return mVials.length+1;
+        return mLocationKeys.size()+1;
+    }
+
+    private String getSlotAddress(String rowLabel, String colLabel) {
+        if (mBox.ContainerType == null) return "";
+
+        int numRows = mBox.ContainerType.NumRows;
+        int numColumns = mBox.ContainerType.NumColumns;
+        String address = "";
+        if (numRows > 1) address = rowLabel;
+        if (numRows > 1 && numColumns > 1) address = address + "-";
+        if (numColumns > 1) address = address + colLabel;
+        return address;
     }
 
     private class VH extends RecyclerView.ViewHolder {

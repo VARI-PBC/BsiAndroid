@@ -6,6 +6,7 @@ import java.util.Map;
 class ReqTaskItem implements Serializable {
     String RequisitionId;
     String TaskId;
+    String TaskName;
     String ReqInstructions;
     String TaskInstructions;
     String Notes;

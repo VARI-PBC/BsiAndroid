@@ -25,7 +25,7 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
         new VialsQueryAsync(){
             @Override
             protected void onPostExecute(List<Box> boxes) {
-                mAdapter.removeBox(0);
+                mAdapter.removeBox(null);
                 mAdapter.addBoxes(boxes);
             }
         }.execute(task);

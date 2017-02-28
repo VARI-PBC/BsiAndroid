@@ -55,6 +55,7 @@ class ReqTasksQueryAsync extends AsyncTask<Map, Integer, List<ReqTaskItem>> {
 
             task.RequisitionId = requisitionId;
             task.TaskId = taskId;
+            task.TaskName = (String) values[display.indexOf(TASK_NAME)];
             task.ReqInstructions = (String) values[display.indexOf(REQ_INSTRUCTIONS)];
             task.TaskInstructions = (String) values[display.indexOf(TASK_INSTRUCTIONS)];
             task.Notes = (String) values[display.indexOf(NOTES)];

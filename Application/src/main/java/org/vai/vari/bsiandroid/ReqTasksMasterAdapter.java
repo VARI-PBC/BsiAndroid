@@ -90,7 +90,7 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
 
         if (holder instanceof ItemViewHolder) {
             ItemViewHolder vh = (ItemViewHolder) holder;
-            vh.requisitionId.setText(task.RequisitionId + " (" + task.TaskId + ")");
+            vh.requisitionId.setText(task.RequisitionId + " (" + task.TaskName + ")");
             vh.instructions.setText(task.ReqInstructions);
 
             String[] dateParts = (task.TaskEndTime).split(" ");

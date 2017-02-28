@@ -33,6 +33,7 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
     }
 
     void addTask(ReqTaskItem task) {
+        if (mTasks.contains(task)) return;
         mTasks.add(task);
         notifyItemInserted(mTasks.size() - 1);
     }

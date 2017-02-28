@@ -89,8 +89,10 @@ public class ReqTasksMasterFragment extends Fragment {
             @SuppressWarnings("unchecked")
             Collection<ReqTaskItem> tasks = (Collection<ReqTaskItem>) savedInstanceState.getSerializable("tasks");
             if (tasks != null) {
-                tasks.remove(null);
                 mAdapter.addTasks(tasks);
+                if (tasks.contains(null)) {
+                    fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime());
+                }
             }
         } else {
             mTaskType = getArguments().getString("taskType");

@@ -111,9 +111,8 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
-        BsiConnector.getInstance().CachedPasswords.put(username, password);
         String database = _databaseText.getText().toString();
-        BsiConnector.Login(username, database, sessionId);
+        BsiConnector.getInstance().Login(username, database, sessionId);
 
         SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
         Set<String> savedUserNames = pref.getStringSet(SAVED_USER_NAMES, new ArraySet<String>());

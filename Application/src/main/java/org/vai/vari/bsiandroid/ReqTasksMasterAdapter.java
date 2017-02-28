@@ -37,10 +37,11 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
         notifyItemInserted(mTasks.size() - 1);
     }
 
-    ReqTaskItem removeTask(int position) {
-        ReqTaskItem item = mTasks.remove(position);
+    int removeTask(ReqTaskItem task) {
+        int position = mTasks.indexOf(task);
+        mTasks.remove(task);
         notifyItemRemoved(position);
-        return item;
+        return position;
     }
 
     void clearTasks() {

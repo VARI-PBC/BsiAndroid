@@ -172,9 +172,7 @@ public class ReqTasksMasterFragment extends Fragment {
         new ReqTasksQueryAsync(){
             @Override
             protected void onPostExecute(List<ReqTaskItem> tasks) {
-                int nTasks = mAdapter.getItemCount();
-                if (nTasks > 0)
-                    mAdapter.removeTask(nTasks-1);
+                mAdapter.removeTask(null);
 
                 if (ex != null) {
                     if (ex.getMessage().contains("Invalid session ID") ||

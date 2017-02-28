@@ -19,4 +19,5 @@
     <color name="primary_material_light">#337ab7</color>
     <color name="accent_material_light">#56b147</color>
     <color name="primary_dark_material_light">#163e53</color>
+    <color name="alternateListColor">#e0e0e0</color>
 </resources>

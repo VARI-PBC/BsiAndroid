@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +103,10 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
 
             vh.completedBy.setText(task.Technician);
             vh.numVials.setText("vials: " + task.VialCount);
+
+            if (position % 2 == 0) {
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.alternateListColor));
+            }
         }
         else if (holder instanceof ProgressViewHolder) {
             ProgressViewHolder vh = (ProgressViewHolder)holder;

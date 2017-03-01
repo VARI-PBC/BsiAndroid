@@ -105,7 +105,8 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
             vh.locationView.setText(loc);
             vh.numVials.setText("vials: " + box.Vials.size());
 
-            boolean asList = getItemViewType(position) == VIEW_LIST;
+            boolean asList = getItemViewType(position) == VIEW_LIST
+                    || vh.listSwitch.isChecked();
             if (asList) {
                 vh.listSwitch.setVisibility(View.INVISIBLE);
             } else {

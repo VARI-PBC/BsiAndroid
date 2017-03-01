@@ -17,7 +17,7 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
         // Fetch the item to display from bundle
         final ReqTaskItem task = (ReqTaskItem) getIntent().getSerializableExtra("task");
         mAdapter = new ReqTaskDetailAdapter(task);
-        RecyclerView boxListView = (RecyclerView)findViewById(R.id.boxList);
+        final RecyclerView boxListView = (RecyclerView)findViewById(R.id.boxList);
         boxListView.setAdapter(mAdapter);
         boxListView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -27,6 +27,14 @@ public class ReqTaskDetailActivity extends AppCompatActivity {
             protected void onPostExecute(List<Box> boxes) {
                 mAdapter.removeBox(null);
                 mAdapter.addBoxes(boxes);
+                // work-around for scroll bug in RecyclerView when adding tall items
+                boxListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        boxListView.scrollToPosition(0);
+                    }
+                });
+
             }
         }.execute(task);
     }

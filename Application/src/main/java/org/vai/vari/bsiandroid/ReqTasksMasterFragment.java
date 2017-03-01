@@ -192,6 +192,7 @@ public class ReqTasksMasterFragment extends Fragment {
                         }
                     });
                     mAdapter.addTasks(tasks);
+                    Toast.makeText(getActivity().getBaseContext(), "" + tasks.size() + " tasks fetched", Toast.LENGTH_LONG).show();
                 }
 
                 // Stop the progress indicator

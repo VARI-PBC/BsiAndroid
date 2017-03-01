@@ -54,25 +54,31 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        RecyclerView.ViewHolder vh;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case VIEW_HEAD:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.req_task_detail_header, parent, false);
-                vh = new HeaderVH(view);
+                holder = new HeaderVH(view);
                 break;
             case VIEW_PROG:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.req_task_footer, parent, false);
-                vh = new RecyclerView.ViewHolder(view) {};
+                holder = new RecyclerView.ViewHolder(view) {};
                 break;
             default:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.req_task_detail_box, parent, false);
-                vh = new BoxVH(view);
+                BoxVH vh;
+                holder = vh = new BoxVH(view);
+                if (viewType == VIEW_LIST) {
+                    vh.listSwitch.setVisibility(View.INVISIBLE);
+                } else {
+                    vh.listSwitch.setChecked(false);
+                }
                 break;
         }
-        return vh;
+        return holder;
     }
 
     @Override
@@ -106,12 +112,7 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
             vh.numVials.setText("vials: " + box.Vials.size());
 
             boolean asList = getItemViewType(position) == VIEW_LIST
-                    || vh.listSwitch.isChecked();
-            if (asList) {
-                vh.listSwitch.setVisibility(View.INVISIBLE);
-            } else {
-                vh.listSwitch.setChecked(false);
-            }
+                || vh.listSwitch.isChecked();
             vh.setUpBoxContents(asList, box);
         }
     }

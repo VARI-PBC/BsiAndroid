@@ -31,21 +31,24 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
     }
 
     void addBoxes(List<Box> boxes) {
-        int positionStart = mBoxes.size();
+        int positionStart = mBoxes.size() + 1; // add 1 for header
         int itemCount = boxes.size();
         mBoxes.addAll(boxes);
-         notifyItemRangeInserted(positionStart, itemCount);
+        notifyItemRangeInserted(positionStart, itemCount);
     }
 
-    void addBox(Box box) {
+    int addBox(Box box) {
+        int position = mBoxes.size() + 1; // add 1 for header
         mBoxes.add(box);
-        notifyItemInserted(mBoxes.size() - 1);
+        notifyItemInserted(position);
+        return position;
     }
 
-    Box removeBox(int position) {
-        Box box = mBoxes.remove(position);
+    int removeBox(Box box) {
+        int position = mBoxes.indexOf(box) + 1; // add 1 for header
+        mBoxes.remove(box);
         notifyItemRemoved(position);
-        return box;
+        return position;
     }
 
     @Override
@@ -76,7 +79,7 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderVH) {
             HeaderVH vh = (HeaderVH)holder;
-            vh.requisitionId.setText(mTask.RequisitionId + " (" + mTask.TaskId + ")");
+            vh.requisitionId.setText(mTask.RequisitionId + " (" + mTask.TaskName + ")");
             vh.reqInstructions.setText(mTask.ReqInstructions);
             String[] dateParts = (mTask.TaskEndTime).split(" ");
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
@@ -96,7 +99,7 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
             BoxVH vh = (BoxVH)holder;
             vh.listSwitch.setOnCheckedChangeListener(vh);
 
-            Box box = mBoxes.get(position-1);
+            Box box = mBoxes.get(position-1); // subtract 1 for header
             String loc = box.ContainerLabel;
             if (box.Workbench != null && !box.Workbench.isEmpty()) loc = loc+" ("+box.Workbench+")";
             vh.locationView.setText(loc);
@@ -117,7 +120,7 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         if (position == 0) return VIEW_HEAD;
-        Box box = mBoxes.get(position-1);
+        Box box = mBoxes.get(position-1); // subtract 1 for header
         if (box == null)
             return VIEW_PROG;
         if (box.ContainerType == null || box.ContainerType.NumColumns == 1
@@ -125,11 +128,6 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
             return VIEW_LIST;
         }
         return VIEW_SLOT;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     @Override
@@ -177,7 +175,6 @@ class ReqTaskDetailAdapter extends RecyclerView.Adapter {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            ViewGroup constraintView = (ViewGroup)buttonView.getParent().getParent();
             switch (buttonView.getId()) {
                 case R.id.listSwitch:
                     BoxContentAdapter adapter = (BoxContentAdapter)boxContents.getAdapter();

@@ -104,9 +104,8 @@ class ReqTasksMasterAdapter extends RecyclerView.Adapter {
             vh.completedBy.setText(task.Technician);
             vh.numVials.setText("vials: " + task.VialCount);
 
-            if (position % 2 == 0) {
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.alternateListColor));
-            }
+            int colorId = position % 2 == 0 ? R.color.alternateListColor : R.color.defaultListColor;
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), colorId));
         }
         else if (holder instanceof ProgressViewHolder) {
             ProgressViewHolder vh = (ProgressViewHolder)holder;

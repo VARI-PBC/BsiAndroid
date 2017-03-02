@@ -17,7 +17,8 @@ class BoxContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int getSlotSize() {
         if (mSlotSize == 0) {
             GridLayoutManager lm = (GridLayoutManager)mRecyclerView.getLayoutManager();
-            mSlotSize = lm.getWidth()/lm.getSpanCount();
+            int spanCount = lm.getSpanCount();
+            mSlotSize = spanCount > 12 ? 235 : 2436/spanCount;
         }
         return mSlotSize;
     }

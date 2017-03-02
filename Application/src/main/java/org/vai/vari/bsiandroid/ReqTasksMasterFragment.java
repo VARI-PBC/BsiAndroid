@@ -91,7 +91,7 @@ public class ReqTasksMasterFragment extends Fragment {
             if (tasks != null) {
                 mAdapter.addTasks(tasks);
                 if (tasks.contains(null)) {
-                    fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime());
+                    fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime(), true);
                 }
             }
         } else {
@@ -156,17 +156,17 @@ public class ReqTasksMasterFragment extends Fragment {
         mQueryEndDate = GregorianCalendar.getInstance();
         mQueryStartDate.add(Calendar.DAY_OF_MONTH, -7);
 
-        fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime());
+        fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime(), false);
     }
 
     private void loadMoreRequisitionTasks() {
         mQueryStartDate.add(Calendar.DAY_OF_MONTH, -7);
         mQueryEndDate.add(Calendar.DAY_OF_MONTH, -7);
 
-        fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime());
+        fetchRequisitionTasks(mQueryStartDate.getTime(), mQueryEndDate.getTime(), true);
     }
 
-    private void fetchRequisitionTasks(final Date startDate, final Date endDate) {
+    private void fetchRequisitionTasks(final Date startDate, final Date endDate, final boolean isLoadMore) {
         // add a null entry so the adapter will check view_type and show progress bar at bottom
         mAdapter.addTask(null);
         loading = true;
@@ -192,7 +192,9 @@ public class ReqTasksMasterFragment extends Fragment {
                         }
                     });
                     mAdapter.addTasks(tasks);
-                    Toast.makeText(getActivity().getBaseContext(), "" + tasks.size() + " tasks fetched", Toast.LENGTH_LONG).show();
+                    if (isLoadMore) {
+                        Toast.makeText(getActivity().getBaseContext(), "" + tasks.size() + " tasks fetched", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 // Stop the progress indicator
